@@ -13,6 +13,17 @@ interface DBUser {
   displays_past: number;
 }
 
+interface DBCheckin {
+  id: number;
+  year: number;
+  month: number;
+  day: number;
+  hours: number;
+  count: number;
+  location_id: string;
+  updated_at: string;
+}
+
 const userFields = [
   "id",
   "screen_name",
@@ -23,6 +34,17 @@ const userFields = [
   "displays_past",
 ];
 
+const checkinFields = [
+  "id",
+  "year",
+  "month",
+  "day",
+  "hours",
+  "count",
+  "location_id",
+  "updated_at",
+];
+
 const dbToUser = (dbUser: DBUser) => ({
   id: dbUser.id,
   screenName: dbUser.screen_name,
@@ -31,6 +53,17 @@ const dbToUser = (dbUser: DBUser) => ({
   visibility: dbUser.visibility,
   listed: dbUser.listed === 1,
   displaysPast: dbUser.displays_past === 1,
+});
+
+const dbToCheckin = (dbCheckin: DBCheckin) => ({
+  id: dbCheckin.id,
+  year: dbCheckin.year,
+  month: dbCheckin.month,
+  day: dbCheckin.day,
+  hours: dbCheckin.hours,
+  count: dbCheckin.count,
+  locationId: dbCheckin.location_id,
+  updatedAt: dbCheckin.updated_at,
 });
 
 // user
@@ -144,7 +177,6 @@ export const updateUser = async (
       where: { conditions: "id = ?", params: [id] },
     })
     .execute();
-  console.log(result);
 };
 
 // checkin
@@ -183,23 +215,16 @@ export const fetchCheckins = async (
     params.push(options.locationId);
   }
   const result = await qb
-    .fetchAll<{
-      id: number;
-      year: number;
-      month: number;
-      day: number;
-      hours: number;
-      count: number;
-    }>({
+    .fetchAll<DBCheckin>({
       tableName: "checkin",
-      fields: ["id", "year", "month", "day", "hours", "count"],
+      fields: checkinFields,
       where: {
         conditions: conditions.join(" AND "),
         params,
       },
     })
     .execute();
-  return result.results ?? [];
+  return result.results?.map(dbToCheckin) ?? [];
 };
 
 export const insertCheckin = async (

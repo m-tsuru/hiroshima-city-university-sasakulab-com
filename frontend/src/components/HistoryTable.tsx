@@ -69,11 +69,13 @@ const HistoryTable = React.memo(({ checkins }: HistoryTableProps) => {
                   c.year === year &&
                   c.month === month &&
                   c.day === day &&
-                  c.hours === x
+                  c.hours === x &&
+                  c.locationId === "utsukuba" &&
+                  c.count > 0
               );
               return (
                 <Cell key={x}>
-                  <CheckedIn enabled={checkin ? checkin.count > 0 : false} />
+                  <CheckedIn enabled={checkin !== undefined} />
                 </Cell>
               );
             })}

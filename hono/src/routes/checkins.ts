@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 
-import { Bindings } from "../libs/utils";
+import { Bindings, getIP, isInternalIP } from "../libs/utils";
 import { authorizeUser } from "../libs/token";
 import { getCookie } from "hono/cookie";
 import { fetchCheckins, insertCheckin, updateCheckin } from "../libs/db";
@@ -21,7 +21,9 @@ app.post("/api/record", async (c) => {
   const day = now.getDate();
   const hours = now.getHours();
 
-  const locationId = "utsukuba";
+  const ip = getIP(c);
+  const isInternal = isInternalIP(ip);
+  const locationId = isInternal ? "utsukuba" : "others";
   const checkinResult = await fetchCheckins(
     userId,
     { year, month, day, hours, locationId },

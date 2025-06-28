@@ -13,11 +13,27 @@ const Wrapper = styled.div`
   scroll-snap-align: start;
 `;
 
-const ScrollHint = styled.p`
+const Header = styled.div`
   color: #999;
   font-size: 14px;
-  margin: 16px 0 0 0;
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Hint = styled.p`
+  margin: 0;
   cursor: pointer;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 4px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 interface PageMainProps {
@@ -34,9 +50,18 @@ const PageMain = ({ wrapperRef, ref }: PageMainProps) => {
 
   return (
     <Wrapper ref={ref}>
-      <ScrollHint onClick={scrollToTop}>
-        上にスクロールしてアカウント登録／サインイン
-      </ScrollHint>
+      <Header>
+        <Hint>
+          <a onClick={scrollToTop}>
+            上にスクロールしてアカウント登録／サインイン
+          </a>
+        </Hint>
+        <Hint>
+          <a href="https://github.com/inaniwaudon/tsukuba-yokohama-dev">
+            GitHub ／ 使い方
+          </a>
+        </Hint>
+      </Header>
       <BrowserRouter>
         <Routes>
           <Route path="/:screenName" element={<UserPage />} />

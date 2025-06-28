@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import { fetchUser, type User } from "../libs/api";
+import { type Checkin, type User, fetchUser } from "../libs/api";
 import HistoryMap from "./HistoryMap";
 import HistoryTable from "./HistoryTable";
 import useCheckin from "../libs/useCheckin";
@@ -44,6 +44,7 @@ const UserPage = () => {
   const usedCheckin = useCheckin();
   const {
     checkins,
+    updatedAt,
     thisMonthTime,
     thisMonthDays,
     thisYearTime,
@@ -59,29 +60,10 @@ const UserPage = () => {
       const user = await fetchUser(screenName.slice(1));
       if (user.type === "success") {
         setUser(user.value);
+        setCheckins(user.value.checkins);
       } else {
         navigate("/");
       }
-
-      setCheckins(
-        [...Array(24)].flatMap((_, i) => {
-          const date = new Date();
-          date.setDate(date.getDate() - i);
-          const year = date.getFullYear();
-          const month = date.getMonth() + 1;
-          const day = date.getDate();
-          const startHour = Math.floor(Math.random() * 20);
-          const duration = Math.floor(Math.random() * 8) + 2;
-
-          return [...Array(24)].map((_, j) => ({
-            year,
-            month,
-            day,
-            hours: j,
-            count: j >= startHour && j < startHour + duration ? 1 : 0,
-          }));
-        })
-      );
     })();
   }, [location]);
 
@@ -94,7 +76,7 @@ const UserPage = () => {
         </H2>
         <p>{user?.message}</p>
       </Header>
-      <p>現在：筑波大学 ／ その他（最終更新：2025/06/23 10:00）</p>
+      <p>現在：筑波大学（最終更新：{updatedAt}）</p>
 
       <H3>いっかげつのきろく</H3>
       <P>

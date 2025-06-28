@@ -37,7 +37,9 @@ export interface Checkin {
   month: number;
   day: number;
   hours: number;
+  locationId: string;
   count: number;
+  updatedAt: string;
 }
 
 export const fetchUser = async (screenName: string) => {
@@ -46,7 +48,7 @@ export const fetchUser = async (screenName: string) => {
     if (!response.ok) {
       return error();
     }
-    return success((await response.json()) as User);
+    return success((await response.json()) as UserWithCheckins);
   } catch {
     return error();
   }
