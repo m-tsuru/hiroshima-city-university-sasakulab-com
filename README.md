@@ -1,10 +1,10 @@
 # tsukuba.yokohama.dev
 
-接続元の IP アドレスを基に筑波大学にいるかいなかを記録・公開する Web サイト
+筑波大学にいるかいないかを記録・公開する Web サイト
 
 <https://tsukuba.yokohama.dev>
 
-## 仕様
+## 仕様・使い方
 
 ### 判定
 - `130.158.0.0/16`, `133.51.0.0/16` からの接続を学内と判定します
@@ -21,28 +21,50 @@
   - 公開状態（公開／非公開／学内限定）
   - リストに表示するか
   - 過去の記録を表示するか
-- トークンの再発行を行えます
+- トークンを再発行できます
   - この際、現行のトークンは失効します
 
 ### 記録
 - 以下の POST リクエストを送信してください
   ```bash
-  curl -X POST https://tsukuba.yokohama.dev/api/record \
-    -H "Authorization: <発行されたトークン>"
+  curl -X POST https://tsukuba.yokohama.dev/api/checkins \
+    -H "Authorization: <YOUR_TOKEN>"
   ```
-  - レートリミット（100回/時間）を設けています
+  - レートリミット（100 回/時間）を設けています
+- macOS を使用している場合は、`tsukuba.plist` をダウンロードして、`$YOUR_TOKEN` を書き換えた上で `~/Library/LaunchAgents/tsukuba.plist` に保存すると、上記コマンドを定期実行できます
 - IP アドレスは収集されません
 
 ## 開発
 
-React + Hono + Vite によって構成されます。
+フロントエンドを Vite + React + React Router による SPA として構築します。
+また、バックエンドを Hono を用いて構築します。
+`/api` に API を、その他にフロントエンドをルーティングします。
 
-`/api` に API を、その他にフロントエンドをデプロイします。
-
-```
+```bash
 cd frontend
-yarn run watch
+yarn run watch  # hono/dist にビルド
 
-cd backend
+cd hono
 yarn run dev
+```
+
+### デプロイ
+
+GitHub Actions を用いてデプロイします。
+
+Security and variables > Actions に以下を設定します。
+
+```bash
+CF_API_TOKEN=<CF_API_TOKEN>
+CF_ACCOUNT_ID=<CF_ACCOUNT_ID>
+```
+
+手動でデプロイする場合は、以下のコマンドを実行します。
+
+```bash
+cd frontend
+yarn run build
+
+cd hono
+yarn run deploy
 ```

@@ -13,6 +13,8 @@ const globalStyles = css`
   }
 
   body {
+    color: #333;
+    line-height: 1.8;
     font-size: 15px;
     margin: 0;
     background: #fff;

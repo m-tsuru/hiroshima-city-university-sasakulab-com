@@ -2,30 +2,57 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import { type Checkin, type User, fetchUser } from "../libs/api";
+import { type User, fetchUser } from "../libs/api";
 import HistoryMap from "./HistoryMap";
 import HistoryTable from "./HistoryTable";
-import useCheckin from "../libs/useCheckin";
+import useCheckin, { isInternal } from "../libs/useCheckin";
 
 const Main = styled.main`
-  padding-top: 32px;
+  padding-top: 24px;
 `;
 
 const Header = styled.header`
-  margin-bottom: 24px;
-  border-bottom: solid 1px #eee;
+  margin-bottom: 32px;
+  padding-left: 32px;
+  border-left: solid 8px #eee;
 `;
 
 const H2 = styled.h2`
   font-size: 18px;
   font-weight: bold;
+  margin: 0;
+`;
+
+const Message = styled.p`
   margin: 0 0 8px 0;
+`;
+
+const Status = styled.p`
+  width: 100%;
+  margin: 0;
+  padding-left: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+`;
+
+const Circle = styled.span<{ status: "internal" | "others" | "inactive" }>`
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin: 0 8px 4px -22px;
+  display: inline-block;
+  border-radius: 50%;
+  background: ${({ status }) =>
+    status === "internal"
+      ? "hsl(25, 80%, 65%)"
+      : status === "others"
+      ? "#999"
+      : "#ccc"};
 `;
 
 const H3 = styled.h3`
   font-size: 1em;
-  font-weight: bold;
-  margin: 24px 0 8px 0;
+  margin: 24px 0 0 0;
 `;
 
 const ScreenName = styled.span`
@@ -44,7 +71,7 @@ const UserPage = () => {
   const usedCheckin = useCheckin();
   const {
     checkins,
-    updatedAt,
+    lastCheckin,
     thisMonthTime,
     thisMonthDays,
     thisYearTime,
@@ -74,9 +101,36 @@ const UserPage = () => {
           {user?.name}
           <ScreenName>（@{user?.screenName}）</ScreenName>
         </H2>
-        <p>{user?.message}</p>
+        <Message>{user?.message}</Message>
+        <Status>
+          {lastCheckin ? (
+            lastCheckin.active ? (
+              <>
+                <Circle
+                  status={
+                    isInternal(lastCheckin.location) ? "internal" : "others"
+                  }
+                />
+                現在：{isInternal(lastCheckin.location) ? "筑波大学" : "その他"}
+                <wbr />
+                （最終更新：{lastCheckin.date}）
+              </>
+            ) : (
+              <>
+                <Circle status="inactive" />
+                現在：不明
+                <br />
+                最終更新：
+                {isInternal(lastCheckin.location)
+                  ? "筑波大学"
+                  : "その他"} ／ {lastCheckin.date}
+              </>
+            )
+          ) : (
+            "記録なし"
+          )}
+        </Status>
       </Header>
-      <p>現在：筑波大学（最終更新：{updatedAt}）</p>
 
       <H3>いっかげつのきろく</H3>
       <P>

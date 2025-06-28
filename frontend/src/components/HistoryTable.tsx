@@ -7,6 +7,10 @@ const Wrapper = styled.div`
   font-size: 12px;
   display: flex;
   flex-direction: column;
+
+  @media screen and (width < 700px) {
+    font-size: 10px;
+  }
 `;
 
 const Row = styled.div`
@@ -16,14 +20,15 @@ const Row = styled.div`
 
 const LeftCell = styled.div`
   flex: calc(100% / 26 * 2);
-  height: 15px;
-  line-height: 15px;
+  min-width: 40px;
+  height: 14px;
+  line-height: 14px;
 `;
 
 const Cell = styled.div`
   flex: calc(100% / 25);
-  height: 15px;
-  line-height: 15px;
+  height: 14px;
+  line-height: 14px;
   border-left: solid 1px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;

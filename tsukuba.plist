@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Tsukuba</key>
+    <string>dev.yokohama.tsukuba</string>
+
+    <key>StartInterval</key>
+    <integer>120</integer>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/curl</string>
+        <string>-X</string>
+        <string>POST</string>
+        <string>-H</string>
+        <string>Authorization: <YOUR_TOKEN></string>
+        <string>https://tsukuba.yokohama.dev/api/checkins</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

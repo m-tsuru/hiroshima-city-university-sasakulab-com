@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import UserPage from "./UserPage";
 
 const Wrapper = styled.div`
-  width: 800px;
+  width: calc(100% - 64px);
+  max-width: 800px;
   margin: 0 auto;
   padding-bottom: 80px;
   flex-direction: column;
@@ -19,16 +20,15 @@ const Header = styled.div`
   margin-top: 16px;
   display: flex;
   justify-content: space-between;
-`;
-
-const Hint = styled.p`
-  margin: 0;
-  cursor: pointer;
+  flex-wrap: wrap;
+  gap: 8px;
 
   a {
     color: inherit;
     text-decoration: none;
     text-underline-offset: 4px;
+    cursor: pointer;
+    display: block;
 
     &:hover {
       text-decoration: underline;
@@ -51,16 +51,12 @@ const PageMain = ({ wrapperRef, ref }: PageMainProps) => {
   return (
     <Wrapper ref={ref}>
       <Header>
-        <Hint>
-          <a onClick={scrollToTop}>
-            上にスクロールしてアカウント登録／サインイン
-          </a>
-        </Hint>
-        <Hint>
-          <a href="https://github.com/inaniwaudon/tsukuba-yokohama-dev">
-            GitHub ／ 使い方
-          </a>
-        </Hint>
+        <a onClick={scrollToTop}>
+          上にスクロールしてアカウント登録／サインイン
+        </a>
+        <a href="https://github.com/inaniwaudon/tsukuba-yokohama-dev">
+          GitHub ／ 使い方
+        </a>
       </Header>
       <BrowserRouter>
         <Routes>

@@ -1,0 +1,52 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Frontend: Cache Dependency
+        uses: actions/cache@v4
+        id: cache-dependency
+        with:
+          path: "frontend/node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('frontend/yarn.lock') }}
+      - name: Frontend: Install dependencies
+        working-directory: frontend
+        if: steps.cache-dependency.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+      - name: Frontend: Build
+        working-directory: frontend
+        run: yarn run build
+
+      - name: Cache Backend (Hono) Dependencies
+        uses: actions/cache@v4
+        id: cache-backend
+        with:
+          path: backend/node_modules
+          key: ${{ runner.os }}-backend-${{ hashFiles('backend/yarn.lock') }}
+
+      - name: Backend: Install dependencies
+        working-directory: hono
+        if: steps.cache-backend.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Backend: Deploy
+        working-directory: hono
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: deploy hono/dist

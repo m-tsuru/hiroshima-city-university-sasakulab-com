@@ -14,24 +14,33 @@ export const getDateKey = (year: number, month: number, day: number) => {
 const useCheckin = () => {
   const [checkins, setCheckins] = useState<Checkin[]>([]);
 
-  const updatedAt = useMemo(() => {
+  const lastCheckin = useMemo(() => {
     if (checkins.length === 0) {
-      return "";
+      return null;
     }
 
-    let latestDate: Date | null = null;
-    for (const checkin of checkins) {
-      const date = new Date(checkin.updatedAt);
-      if (!latestDate || date > latestDate) {
-        latestDate = date;
+    let last = checkins[0];
+    for (const checkin of checkins.slice(1)) {
+      const currentDate = new Date(checkin.updatedAt);
+      const latestDate = new Date(last.updatedAt);
+      if (!latestDate || currentDate > latestDate) {
+        last = checkin;
       }
     }
-    const year = latestDate!.getFullYear();
-    const month = (latestDate!.getMonth() + 1).toString().padStart(2, "0");
-    const day = latestDate!.getDate().toString().padStart(2, "0");
-    const hours = latestDate!.getHours().toString().padStart(2, "0");
-    const minutes = latestDate!.getMinutes().toString().padStart(2, "0");
-    return `${year}/${month}/${day} ${hours}:${minutes}`;
+    const lastDate = new Date(last.updatedAt);
+    const year = lastDate.getFullYear();
+    const month = (lastDate.getMonth() + 1).toString().padStart(2, "0");
+    const day = lastDate.getDate().toString().padStart(2, "0");
+    const hours = lastDate.getHours().toString().padStart(2, "0");
+    const minutes = lastDate.getMinutes().toString().padStart(2, "0");
+
+    const active = lastDate.getTime() > Date.now() - 60 * 60 * 1000;
+
+    return {
+      location: last.locationId,
+      date: `${year}/${month}/${day} ${hours}:${minutes}`,
+      active,
+    };
   }, [checkins]);
 
   const [thisMonthTime, thisMonthDays, thisYearTime, thisYearDays] =
@@ -82,7 +91,7 @@ const useCheckin = () => {
 
   return {
     checkins,
-    updatedAt,
+    lastCheckin,
     thisMonthTime,
     thisMonthDays,
     thisYearTime,
