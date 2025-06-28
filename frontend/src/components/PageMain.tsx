@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   width: calc(100% - 64px);
   max-width: 800px;
   margin: 0 auto;
-  padding-bottom: 80px;
+  padding: 16px 0 48px 0;
   flex-direction: column;
   background: #fff;
   box-sizing: border-box;
@@ -17,7 +17,9 @@ const Wrapper = styled.div`
 const Header = styled.div`
   color: #999;
   font-size: 14px;
-  margin-top: 16px;
+  margin: 0 0 24px 0;
+  padding-bottom: 8px;
+  border-bottom: solid 1px #eee;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;

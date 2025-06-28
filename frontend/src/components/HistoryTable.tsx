@@ -29,7 +29,7 @@ const Cell = styled.div`
   flex: calc(100% / 25);
   height: 14px;
   line-height: 14px;
-  border-left: solid 1px rgba(0, 0, 0, 0.2);
+  border-left: solid 1px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
   align-items: center;

@@ -39,14 +39,14 @@ app.post("/", async (c) => {
   const inLocation = checkinResult.find((c) => c.locationId === locationId);
   if (!inLocation) {
     await insertCheckin(userId, year, month, day, hours, locationId, c.env.DB);
-    return;
+    return c.json({ count: 1 }, 201);
   }
 
   // 存在する場合はインクリメント
   const checkinId = inLocation.id;
   const count = inLocation.count + 1;
   await updateCheckin(checkinId, count, c.env.DB);
-  return c.json({ success: true }, 201);
+  return c.json({ count }, 201);
 });
 
 export default app;

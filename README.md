@@ -31,8 +31,14 @@
     -H "Authorization: <YOUR_TOKEN>"
   ```
   - レートリミット（100 回/時間）を設けています
-- macOS を使用している場合は、`tsukuba.plist` をダウンロードして、`$YOUR_TOKEN` を書き換えた上で `~/Library/LaunchAgents/tsukuba.plist` に保存すると、上記コマンドを定期実行できます
-- IP アドレスは収集されません
+  - IP アドレスは収集されません
+
+**macOS を使用している場合**  
+launchd を用いて上記コマンドを定期実行できます
+
+1. `dev.yokohama.tsukuba.plist` をダウンロードします
+2. `$YOUR_TOKEN` を書き換えた上で `~/Library/LaunchAgents` に保存します
+3. `launchctl load ~/Library/LaunchAgents/dev.yokohama.tsukuba.plist` を実行します
 
 ## 開発
 

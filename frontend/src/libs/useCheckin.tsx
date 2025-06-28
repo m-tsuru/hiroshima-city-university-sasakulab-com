@@ -55,7 +55,7 @@ const useCheckin = () => {
       let monthDays = new Set<string>();
 
       for (const checkin of checkins) {
-        if (!isInternal(checkin.locationId) && checkin.count === 0) {
+        if (!isInternal(checkin.locationId) || checkin.count === 0) {
           continue;
         }
         const key = getDateKey(checkin.year, checkin.month, checkin.day);

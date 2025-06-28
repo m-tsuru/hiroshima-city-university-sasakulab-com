@@ -7,14 +7,8 @@ import HistoryMap from "./HistoryMap";
 import HistoryTable from "./HistoryTable";
 import useCheckin, { isInternal } from "../libs/useCheckin";
 
-const Main = styled.main`
-  padding-top: 24px;
-`;
-
 const Header = styled.header`
-  margin-bottom: 32px;
-  padding-left: 32px;
-  border-left: solid 8px #eee;
+  margin-bottom: 24px;
 `;
 
 const H2 = styled.h2`
@@ -95,7 +89,7 @@ const UserPage = () => {
   }, [location]);
 
   return (
-    <Main>
+    <main>
       <Header>
         <H2>
           {user?.name}
@@ -143,7 +137,7 @@ const UserPage = () => {
         今年は {thisYearTime} 時間（{thisYearDays} 日）大学にいました
       </P>
       <HistoryMap usedCheckin={usedCheckin} />
-    </Main>
+    </main>
   );
 };
 
