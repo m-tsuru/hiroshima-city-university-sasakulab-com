@@ -92,6 +92,7 @@ usersMePublic.post("/signin", async (c) => {
   setCookieToken(c, idToken!);
   return c.json(user);
 });
+
 // サインアウト
 usersMePublic.post("/signout", async (c) => {
   deleteCookie(c, "token", { secure: true });

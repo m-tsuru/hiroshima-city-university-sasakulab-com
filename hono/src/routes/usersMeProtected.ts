@@ -16,7 +16,7 @@ export const usersMeProtected = new Hono<{
   };
 }>();
 
-usersMeProtected.use("/*", authMiddleware);
+usersMeProtected.use("/*", authMiddleware(true));
 
 // ユーザ情報を取得
 usersMeProtected.get("/", async (c) => {

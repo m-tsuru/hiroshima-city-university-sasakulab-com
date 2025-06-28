@@ -11,7 +11,7 @@ const app = new Hono<{
   };
 }>();
 
-app.post("/", authMiddleware, async (c) => {
+app.post("/", authMiddleware(true), async (c) => {
   const userId = c.get("userId");
 
   const now = new Date();
