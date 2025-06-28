@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import dayjs from "dayjs";
 
-import { Bindings, getIP, isInternalIP } from "../libs/utils";
 import { fetchCheckins, insertCheckin, updateCheckin } from "../libs/db";
-import { authMiddleware } from "../libs/auth";
+import { authMiddleware } from "../libs/token";
+import { Bindings, getIP, isInternalIP } from "../libs/utils";
 
 const app = new Hono<{
   Bindings: Bindings;
@@ -12,7 +12,7 @@ const app = new Hono<{
   };
 }>();
 
-app.post("/", authMiddleware(true), async (c) => {
+app.post("/", authMiddleware(true, "authorization"), async (c) => {
   const userId = c.get("userId");
 
   const now = dayjs().tz();

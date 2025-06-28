@@ -1,9 +1,10 @@
 import { Context } from "hono";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
+import { createMiddleware } from "hono/factory";
 import { D1QB } from "workers-qb";
 import bcrypt from "bcryptjs";
 
-import { error, success } from "./utils";
+import { Bindings, error, success } from "./utils";
 import { D1Database } from "@cloudflare/workers-types";
 
 export const hashToken = (token: string) => {
@@ -22,10 +23,7 @@ export const setCookieToken = (c: Context, idToken: string) => {
   });
 };
 
-export const authorizeUser = async (
-  idToken: string | undefined,
-  DB: D1Database
-) => {
+const authorizeUser = async (idToken: string | undefined, DB: D1Database) => {
   const qb = new D1QB(DB);
 
   // トークンを検証
@@ -61,3 +59,35 @@ export const authorizeUser = async (
   }
   return success(userId);
 };
+
+export const authMiddleware = (
+  occursError: boolean,
+  type: "cookie" | "authorization"
+) =>
+  createMiddleware<{
+    Bindings: Bindings;
+    Variables: {
+      userId: string | null;
+    };
+  }>(async (c, next) => {
+    // Authorization ヘッダまたは Cookie からトークンを取得
+    let idToken: string | undefined = undefined;
+    if (type === "cookie") {
+      idToken = getCookie(c, "token");
+    } else {
+      idToken = c.req.header("Authorization");
+    }
+
+    const userIdResult = await authorizeUser(idToken, c.env.DB);
+    if (userIdResult.type === "error") {
+      if (occursError) {
+        return c.json({ error: userIdResult.message }, userIdResult.status);
+      } else {
+        c.set("userId", null);
+        await next();
+        return;
+      }
+    }
+    c.set("userId", userIdResult.value);
+    await next();
+  });

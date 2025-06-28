@@ -3,8 +3,8 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import dayjs from "dayjs";
 
-import { authMiddleware } from "../libs/auth";
 import { fetchAllUsers, fetchCheckins, fetchUser } from "../libs/db";
+import { authMiddleware } from "../libs/token";
 import {
   Bindings,
   getIP,
@@ -34,7 +34,7 @@ app.get("/", async (c) => {
 
 app.get(
   "/:atScreenName",
-  authMiddleware(false),
+  authMiddleware(false, "cookie"),
   zValidator("param", getParamSchema),
   async (c) => {
     const userId = c.get("userId");

@@ -6,8 +6,8 @@ import { deleteCookie } from "hono/cookie";
 
 import { fetchUser, insertUser } from "../libs/db";
 import {
+  authMiddleware,
   getIdToken,
-  authorizeUser,
   hashToken,
   setCookieToken,
 } from "../libs/token";
@@ -76,22 +76,20 @@ usersMePublic.post("/", zValidator("json", postParamSchema), async (c) => {
 });
 
 // サインイン
-usersMePublic.post("/signin", async (c) => {
-  const idToken = c.req.header("authorization");
-  const userIdResult = await authorizeUser(idToken, c.env.DB);
-  if (userIdResult.type === "error") {
-    return c.json({ error: userIdResult.message }, userIdResult.status);
+usersMePublic.post(
+  "/signin",
+  authMiddleware(true, "authorization"),
+  async (c) => {
+    const userId = c.get("userId")!;
+    const user = await fetchUser({ type: "id", value: userId }, c.env.DB);
+    if (!user) {
+      return c.json({ error: "User not found", type: "USER_NOT_FOUND" }, 404);
+    }
+    const idToken = c.req.header("authorization");
+    setCookieToken(c, idToken!);
+    return c.json(user);
   }
-  const user = await fetchUser(
-    { type: "id", value: userIdResult.value },
-    c.env.DB
-  );
-  if (!user) {
-    return c.json({ error: "User not found", type: "USER_NOT_FOUND" }, 404);
-  }
-  setCookieToken(c, idToken!);
-  return c.json(user);
-});
+);
 
 // サインアウト
 usersMePublic.post("/signout", async (c) => {

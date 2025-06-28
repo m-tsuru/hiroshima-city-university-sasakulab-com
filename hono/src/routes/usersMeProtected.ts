@@ -4,9 +4,13 @@ import { zValidator } from "@hono/zod-validator";
 import { v4 as uuidv4 } from "uuid";
 
 import { fetchUser, updateUser } from "../libs/db";
-import { getIdToken, hashToken, setCookieToken } from "../libs/token";
+import {
+  authMiddleware,
+  getIdToken,
+  hashToken,
+  setCookieToken,
+} from "../libs/token";
 import { Bindings, screenNameRegexStr } from "../libs/utils";
-import { authMiddleware } from "../libs/auth";
 
 // 認証が必要なエンドポイント
 export const usersMeProtected = new Hono<{
@@ -16,10 +20,8 @@ export const usersMeProtected = new Hono<{
   };
 }>();
 
-usersMeProtected.use("/*", authMiddleware(true));
-
 // ユーザ情報を取得
-usersMeProtected.get("/", async (c) => {
+usersMeProtected.get("/", authMiddleware(true, "cookie"), async (c) => {
   const userId = c.get("userId");
   const user = await fetchUser({ type: "id", value: userId }, c.env.DB);
   if (!user) {
@@ -41,43 +43,48 @@ const patchParamSchema = z.object({
   displaysPast: z.boolean().optional(),
 });
 
-usersMeProtected.patch("/", zValidator("json", patchParamSchema), async (c) => {
-  const id = c.get("userId");
-  const { screenName, name, message, visibility, listed, displaysPast } =
-    c.req.valid("json");
+usersMeProtected.patch(
+  "/",
+  authMiddleware(true, "cookie"),
+  zValidator("json", patchParamSchema),
+  async (c) => {
+    const id = c.get("userId");
+    const { screenName, name, message, visibility, listed, displaysPast } =
+      c.req.valid("json");
 
-  // ID の重複をチェック
-  if (screenName) {
-    const user = await fetchUser(
-      { type: "screen_name", value: screenName },
+    // ID の重複をチェック
+    if (screenName) {
+      const user = await fetchUser(
+        { type: "screen_name", value: screenName },
+        c.env.DB
+      );
+      if (user && user.id !== id) {
+        return c.json(
+          { error: "The specified ID already used", type: "ID_ALREADY_USED" },
+          400
+        );
+      }
+    }
+
+    await updateUser(
+      id,
+      { screenName, name, message, visibility, listed, displaysPast },
       c.env.DB
     );
-    if (user && user.id !== id) {
-      return c.json(
-        { error: "The specified ID already used", type: "ID_ALREADY_USED" },
-        400
-      );
-    }
+    return c.json({
+      id,
+      screenName,
+      name,
+      message,
+      visibility,
+      listed,
+      displaysPast,
+    });
   }
-
-  await updateUser(
-    id,
-    { screenName, name, message, visibility, listed, displaysPast },
-    c.env.DB
-  );
-  return c.json({
-    id,
-    screenName,
-    name,
-    message,
-    visibility,
-    listed,
-    displaysPast,
-  });
-});
+);
 
 // トークン再発行
-usersMeProtected.get("/token", async (c) => {
+usersMeProtected.get("/token", authMiddleware(true, "cookie"), async (c) => {
   const userId = c.get("userId");
   const token = uuidv4();
   const hashedToken = hashToken(token);

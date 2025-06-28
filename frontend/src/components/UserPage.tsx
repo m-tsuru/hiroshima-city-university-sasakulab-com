@@ -126,7 +126,10 @@ const UserPage = () => {
               </>
             )
           ) : (
-            "記録なし"
+            <>
+              <Circle status="inactive" />
+              記録なし
+            </>
           )}
         </Status>
       </Header>

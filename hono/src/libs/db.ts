@@ -1,4 +1,5 @@
 import { D1Database } from "@cloudflare/workers-types";
+import dayjs from "dayjs";
 import { D1QB, Primitive } from "workers-qb";
 
 export type Visibility = "public" | "private" | "internal";
@@ -63,7 +64,7 @@ const dbToCheckin = (dbCheckin: DBCheckin) => ({
   hours: dbCheckin.hours,
   count: dbCheckin.count,
   locationId: dbCheckin.location_id,
-  updatedAt: dbCheckin.updated_at,
+  updatedAt: dayjs(dbCheckin.updated_at).tz("Asia/Tokyo").format(),
 });
 
 // user

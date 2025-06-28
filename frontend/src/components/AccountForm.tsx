@@ -329,7 +329,7 @@ const AccountForm = () => {
           ) : (
             <FormWrapper>
               <Form onSubmit={(e) => e.preventDefault()}>
-                <H2>アカウント登録（学内限定）</H2>
+                <H2>アカウント登録</H2>
                 <FormContent>
                   <Row>
                     <label style={{ flexGrow: 2 }}>
