@@ -3,7 +3,7 @@ import { setCookie } from "hono/cookie";
 import { D1QB } from "workers-qb";
 import bcrypt from "bcryptjs";
 
-import { Bindings, error, success } from "./utils";
+import { error, success } from "./utils";
 import { D1Database } from "@cloudflare/workers-types";
 
 export const hashToken = (token: string) => {

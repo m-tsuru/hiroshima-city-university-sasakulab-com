@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
+import dayjs from "dayjs";
 
 import { authMiddleware } from "../libs/auth";
 import { fetchAllUsers, fetchCheckins, fetchUser } from "../libs/db";
@@ -55,11 +56,11 @@ app.get(
     }
 
     // チェックインを検索
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    const hours = now.getHours();
+    const now = dayjs().tz();
+    const year = now.year();
+    const month = now.month() + 1;
+    const day = now.date();
+    const hours = now.hour();
     const options = user.displaysPast ? {} : { year, month, day, hours };
     const checkins = await fetchCheckins(user.id, options, c.env.DB);
     return c.json({ ...user, checkins });

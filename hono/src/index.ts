@@ -1,10 +1,19 @@
 import { Hono } from "hono";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import "dayjs/locale/ja";
 
 import { Bindings } from "./libs/utils";
 import checkins from "./routes/checkins";
 import users from "./routes/users";
 import { usersMeProtected } from "./routes/usersMeProtected";
 import { usersMePublic } from "./routes/usersMePublic";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
+dayjs.locale("ja");
 
 const app = new Hono<{ Bindings: Bindings }>();
 

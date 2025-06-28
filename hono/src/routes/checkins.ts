@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import dayjs from "dayjs";
 
 import { Bindings, getIP, isInternalIP } from "../libs/utils";
 import { fetchCheckins, insertCheckin, updateCheckin } from "../libs/db";
@@ -14,11 +15,11 @@ const app = new Hono<{
 app.post("/", authMiddleware(true), async (c) => {
   const userId = c.get("userId");
 
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  const hours = now.getHours();
+  const now = dayjs().tz();
+  const year = now.year();
+  const month = now.month() + 1;
+  const day = now.date();
+  const hours = now.hour();
 
   const ip = getIP(c);
   const isInternal = isInternalIP(ip);

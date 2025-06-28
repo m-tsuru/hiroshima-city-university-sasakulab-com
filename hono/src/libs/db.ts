@@ -170,7 +170,7 @@ export const updateUser = async (
   if (hashedToken !== undefined) {
     newData.hashed_token = hashedToken;
   }
-  const result = await qb
+  await qb
     .update({
       tableName: "user",
       data: newData,
