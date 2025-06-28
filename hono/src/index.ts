@@ -3,7 +3,8 @@ import { Hono } from "hono";
 import { Bindings } from "./libs/utils";
 import checkins from "./routes/checkins";
 import users from "./routes/users";
-import { usersMePublic, usersMeProtected } from "./routes/usersMe";
+import { usersMeProtected } from "./routes/usersMeProtected";
+import { usersMePublic } from "./routes/usersMePublic";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
