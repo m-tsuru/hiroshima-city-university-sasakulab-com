@@ -44,7 +44,13 @@ app.get("/:atScreenName", zValidator("param", getParamSchema), async (c) => {
   }
 
   // チェックインを検索
-  const checkins = await fetchCheckins(user.id, {}, c.env.DB);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const hours = now.getHours();
+  const options = user.displaysPast ? {} : { year, month, day, hours };
+  const checkins = await fetchCheckins(user.id, options, c.env.DB);
   return c.json({ ...user, checkins });
 });
 

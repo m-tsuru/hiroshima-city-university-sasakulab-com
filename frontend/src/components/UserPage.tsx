@@ -44,6 +44,10 @@ const Circle = styled.span<{ status: "internal" | "others" | "inactive" }>`
       : "#ccc"};
 `;
 
+const LastUpdate = styled.span`
+  color: #666;
+`;
+
 const H3 = styled.h3`
   font-size: 1em;
   margin: 24px 0 0 0;
@@ -103,19 +107,22 @@ const UserPage = () => {
                     isInternal(lastCheckin.location) ? "internal" : "others"
                   }
                 />
-                現在：{isInternal(lastCheckin.location) ? "筑波大学" : "その他"}
-                <wbr />
-                （最終更新：{lastCheckin.date}）
+                現在：
+                {isInternal(lastCheckin.location) ? "筑波大学" : "その他"}
+                <br />
+                <LastUpdate>最終更新：{lastCheckin.date}</LastUpdate>
               </>
             ) : (
               <>
                 <Circle status="inactive" />
                 現在：不明
                 <br />
-                最終更新：
-                {isInternal(lastCheckin.location)
-                  ? "筑波大学"
-                  : "その他"} ／ {lastCheckin.date}
+                <LastUpdate>
+                  最終更新：
+                  {isInternal(lastCheckin.location)
+                    ? "筑波大学"
+                    : "その他"} ／ {lastCheckin.date}
+                </LastUpdate>
               </>
             )
           ) : (

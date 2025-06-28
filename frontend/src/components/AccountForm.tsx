@@ -11,7 +11,7 @@ import {
 const Wrapper = styled.div`
   width: calc(100% - 64px);
   max-width: 800px;
-  min-height: calc(60vh - 40px);
+  min-height: calc(60dvh - 40px);
   flex-shrink: 0;
   margin: 0 auto 0 auto;
   padding-top: 24px;
