@@ -6,9 +6,21 @@ export const isInternal = (locationId: string) => {
 };
 
 export const getDateKey = (year: number, month: number, day: number) => {
-  return `${year}-${month.toString().padStart(2, "0")}-${day
-    .toString()
-    .padStart(2, "0")}`;
+  const monthStr = month.toString().padStart(2, "0");
+  const dayStr = day.toString().padStart(2, "0");
+  return `${year}/${monthStr}/${dayStr}`;
+};
+
+export const getDateHoursKey = (
+  year: number,
+  month: number,
+  day: number,
+  hours: number
+) => {
+  const monthStr = month.toString().padStart(2, "0");
+  const dayStr = day.toString().padStart(2, "0");
+  const hoursStr = hours.toString().padStart(2, "0");
+  return `${year}/${monthStr}/${dayStr} ${hoursStr}`;
 };
 
 const useCheckin = () => {
@@ -75,16 +87,53 @@ const useCheckin = () => {
       return [monthTime, monthDays.size, yearTime, yearDays.size];
     }, [checkins]);
 
-  const hoursByDay = useMemo(() => {
-    const dict: Record<string, number> = {};
+  /**
+   * 時間ごとのチェックイン数
+   */
+  const checkinsPerHour = useMemo(() => {
+    const dict: Record<string, { internalCount: number; othersCount: number }> =
+      {};
 
-    // checkinsから一日ごとの滞在時間を集計
+    for (const checkin of checkins) {
+      const dayeHoursKey = getDateHoursKey(
+        checkin.year,
+        checkin.month,
+        checkin.day,
+        checkin.hours
+      );
+      if (!dict[dayeHoursKey]) {
+        dict[dayeHoursKey] = { internalCount: 0, othersCount: 0 };
+      }
+      if (isInternal(checkin.locationId)) {
+        dict[dayeHoursKey].internalCount += checkin.count;
+      } else {
+        dict[dayeHoursKey].othersCount += checkin.count;
+      }
+    }
+    return dict;
+  }, [checkins]);
+
+  /**
+   * 日ごとにチェックインした時間数
+   */
+  const checkinsPerDay = useMemo(() => {
+    const dict: Record<string, { internalHours: number; othersHours: number }> =
+      {};
+
     for (const checkin of checkins) {
       const dateKey = getDateKey(checkin.year, checkin.month, checkin.day);
-      const currentHours = dict[dateKey] ?? 0;
-      if (isInternal(checkin.locationId) && checkin.count > 0) {
-        dict[dateKey] = currentHours + 1;
+      const currentHours = dict[dateKey] ?? {
+        internalHours: 0,
+        othersHours: 0,
+      };
+      if (checkin.count) {
+        if (isInternal(checkin.locationId)) {
+          currentHours.internalHours += 1;
+        } else {
+          currentHours.othersHours += 1;
+        }
       }
+      dict[dateKey] = currentHours;
     }
     return dict;
   }, [checkins]);
@@ -96,7 +145,8 @@ const useCheckin = () => {
     thisMonthDays,
     thisYearTime,
     thisYearDays,
-    hoursByDay,
+    checkinsPerHour,
+    checkinsPerDay,
     setCheckins,
   };
 };

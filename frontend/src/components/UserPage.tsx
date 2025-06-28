@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { type User, fetchUser } from "../libs/api";
-import HistoryMap from "./HistoryMap";
-import HistoryTable from "./HistoryTable";
+import HistoryYearMap from "./HistoryYearMap";
+import HistoryMonthTable from "./HistoryMonthTable";
 import useCheckin, { isInternal } from "../libs/useCheckin";
 
 const Header = styled.header`
@@ -40,7 +40,7 @@ const Circle = styled.span<{ status: "internal" | "others" | "inactive" }>`
     status === "internal"
       ? "hsl(25, 80%, 65%)"
       : status === "others"
-      ? "#999"
+      ? "#ccc"
       : "#ccc"};
 `;
 
@@ -64,12 +64,10 @@ const UserPage = () => {
   const [user, setUser] = useState<User | null>(null);
   const usedCheckin = useCheckin();
   const {
-    checkins,
     lastCheckin,
     thisMonthTime,
     thisMonthDays,
-    thisYearTime,
-    thisYearDays,
+    checkinsPerHour,
     setCheckins,
   } = usedCheckin;
 
@@ -130,13 +128,10 @@ const UserPage = () => {
       <P>
         今月は {thisMonthTime} 時間（{thisMonthDays} 日）大学にいました
       </P>
-      <HistoryTable checkins={checkins} />
+      <HistoryMonthTable checkinsPerHour={checkinsPerHour} />
 
       <H3>ことしのきろく</H3>
-      <P>
-        今年は {thisYearTime} 時間（{thisYearDays} 日）大学にいました
-      </P>
-      <HistoryMap usedCheckin={usedCheckin} />
+      <HistoryYearMap usedCheckin={usedCheckin} />
     </main>
   );
 };
