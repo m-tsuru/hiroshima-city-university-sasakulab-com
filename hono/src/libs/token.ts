@@ -14,10 +14,7 @@ export const getIdToken = (userId: string, token: string) => {
   return `${userId}:${token}`;
 };
 
-export const setCookieToken = (
-  c: Context<{ Bindings: Bindings }>,
-  idToken: string
-) => {
+export const setCookieToken = (c: Context, idToken: string) => {
   setCookie(c, "token", idToken, {
     httpOnly: true,
     secure: true,

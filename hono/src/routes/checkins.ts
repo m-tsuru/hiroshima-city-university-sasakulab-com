@@ -1,18 +1,18 @@
 import { Hono } from "hono";
 
 import { Bindings, getIP, isInternalIP } from "../libs/utils";
-import { authorizeUser } from "../libs/token";
 import { fetchCheckins, insertCheckin, updateCheckin } from "../libs/db";
+import { authMiddleware } from "../libs/auth";
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{
+  Bindings: Bindings;
+  Variables: {
+    userId?: string;
+  };
+}>();
 
-app.post("/", async (c) => {
-  const idToken = c.req.header("Authorization");
-  const userIdResult = await authorizeUser(idToken, c.env.DB);
-  if (userIdResult.type === "error") {
-    return c.json({ error: userIdResult.message }, userIdResult.status);
-  }
-  const userId = userIdResult.value;
+app.post("/", authMiddleware, async (c) => {
+  const userId = c.get("userId");
 
   const now = new Date();
   const year = now.getFullYear();

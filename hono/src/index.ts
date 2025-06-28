@@ -3,12 +3,13 @@ import { Hono } from "hono";
 import { Bindings } from "./libs/utils";
 import checkins from "./routes/checkins";
 import users from "./routes/users";
-import usersMe from "./routes/usersMe";
+import { usersMePublic, usersMeProtected } from "./routes/usersMe";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.route("/api/checkins", checkins);
-app.route("/api/users/me", usersMe);
+app.route("/api/users/me", usersMeProtected);
+app.route("/api/users/me", usersMePublic);
 app.route("/api/users", users);
 
 app.get("/", async (c) => {
