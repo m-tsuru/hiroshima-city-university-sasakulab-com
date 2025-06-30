@@ -68,12 +68,50 @@ const dbToCheckin = (dbCheckin: DBCheckin) => ({
 });
 
 // user
-export const fetchAllUsers = async (DB: D1Database) => {
+export const fetchAllUsers = async (
+  DB: D1Database,
+  checkinDate: {
+    year: number;
+    month: number;
+    day: number;
+    hours: number;
+  }
+) => {
   const qb = new D1QB(DB);
+  const checkinConditions = [
+    "checkin.year = ?",
+    "checkin.month = ?",
+    "checkin.day = ?",
+    "checkin.hours = ?",
+  ];
+  const checkinParams: Primitive[] = [
+    checkinDate.year,
+    checkinDate.month,
+    checkinDate.day,
+    checkinDate.hours,
+  ];
+
   const { results } = await qb
     .fetchAll<DBUser>({
       tableName: "user",
-      fields: userFields,
+      fields: ["user.*"],
+      join: {
+        type: "LEFT",
+        table: {
+          tableName: "checkin",
+          fields: ["user_id", "count", "location_id"],
+          where: {
+            conditions: checkinConditions.join(" AND "),
+            params: checkinParams,
+          },
+        },
+        alias: "checkin",
+        on: "user.id = checkin.user_id",
+      },
+      where: {
+        conditions: "TRUE",
+        params: checkinParams,
+      },
     })
     .execute();
   if (!results) {

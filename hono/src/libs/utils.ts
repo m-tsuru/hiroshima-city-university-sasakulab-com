@@ -1,4 +1,5 @@
 import { D1Database, KVNamespace } from "@cloudflare/workers-types";
+import dayjs from "dayjs";
 import { Context } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 
@@ -43,4 +44,13 @@ export const getIP = (c: Context) => {
 export const isInternalIP = (ip: string) => {
   const prefixes = ["130.158.", "133.51."];
   return prefixes.some((prefix) => ip.startsWith(prefix));
+};
+
+export const getNow = () => {
+  const now = dayjs().tz();
+  const year = now.year();
+  const month = now.month() + 1;
+  const day = now.date();
+  const hours = now.hour();
+  return { year, month, day, hours };
 };

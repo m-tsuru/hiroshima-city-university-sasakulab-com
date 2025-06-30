@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { fetchCheckins, insertCheckin, updateCheckin } from "../libs/db";
 import { authMiddleware } from "../libs/token";
-import { Bindings, getIP, isInternalIP } from "../libs/utils";
+import { Bindings, getIP, getNow, isInternalIP } from "../libs/utils";
 
 const app = new Hono<{
   Bindings: Bindings;
@@ -15,11 +15,7 @@ const app = new Hono<{
 app.post("/", authMiddleware(true, "authorization"), async (c) => {
   const userId = c.get("userId");
 
-  const now = dayjs().tz();
-  const year = now.year();
-  const month = now.month() + 1;
-  const day = now.date();
-  const hours = now.hour();
+  const { year, month, day, hours } = getNow();
 
   const ip = getIP(c);
   const isInternal = isInternalIP(ip);

@@ -1,11 +1,14 @@
 import styled from "@emotion/styled";
 import { BrowserRouter, Routes, Route } from "react-router";
 
+import TopPage from "./TopPage";
 import UserPage from "./UserPage";
 
 const Wrapper = styled.div`
   width: calc(100% - 64px);
   max-width: 800px;
+  min-height: 100dvh;
+  flex-shrink: 0;
   margin: 0 auto;
   padding: 16px 0 48px 0;
   flex-direction: column;
@@ -62,6 +65,7 @@ const PageMain = ({ wrapperRef, ref }: PageMainProps) => {
       </Header>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<TopPage />} />
           <Route path="/:screenName" element={<UserPage />} />
         </Routes>
       </BrowserRouter>

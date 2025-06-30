@@ -8,6 +8,7 @@ import { authMiddleware } from "../libs/token";
 import {
   Bindings,
   getIP,
+  getNow,
   isInternalIP,
   screenNameRegexStr,
 } from "../libs/utils";
@@ -24,11 +25,15 @@ const isVisible = (visibility: string, ip: string) => {
 };
 
 app.get("/", async (c) => {
-  const users = await fetchAllUsers(c.env.DB);
+  const { year, month, day, hours } = getNow();
+  const users = await fetchAllUsers(c.env.DB, {
+    year,
+    month,
+    day,
+    hours,
+  });
   const ip = getIP(c);
-  const filteredUsers = users.filter(
-    (user) => user.listed && isVisible(user.visibility, ip)
-  );
+  const filteredUsers = users.filter((user) => isVisible(user.visibility, ip));
   return c.json(filteredUsers);
 });
 
@@ -56,11 +61,7 @@ app.get(
     }
 
     // チェックインを検索
-    const now = dayjs().tz();
-    const year = now.year();
-    const month = now.month() + 1;
-    const day = now.date();
-    const hours = now.hour();
+    const { year, month, day, hours } = getNow();
     const options = user.displaysPast ? {} : { year, month, day, hours };
     const checkins = await fetchCheckins(user.id, options, c.env.DB);
     return c.json({ ...user, checkins });

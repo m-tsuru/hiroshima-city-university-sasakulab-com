@@ -80,10 +80,10 @@ const UserPage = () => {
       if (!screenName || !screenName.startsWith("@")) {
         return;
       }
-      const user = await fetchUser(screenName.slice(1));
-      if (user.type === "success") {
-        setUser(user.value);
-        setCheckins(user.value.checkins);
+      const result = await fetchUser(screenName.slice(1));
+      if (result.type === "success") {
+        setUser(result.value);
+        setCheckins(result.value.checkins);
       } else {
         navigate("/");
       }
