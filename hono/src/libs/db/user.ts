@@ -1,5 +1,4 @@
 import { D1Database } from "@cloudflare/workers-types";
-import dayjs from "dayjs";
 import { D1QB, Primitive } from "workers-qb";
 
 export type Visibility = "public" | "private" | "internal";
@@ -14,18 +13,25 @@ interface DBUser {
   displays_past: number;
 }
 
-interface DBCheckin {
-  id: number;
-  year: number;
-  month: number;
-  day: number;
-  hours: number;
-  count: number;
+type DBUserWithCheckin = DBUser & {
   location_id: string;
-  updated_at: string;
+};
+
+interface User {
+  id: string;
+  screenName: string;
+  name: string;
+  message: string;
+  visibility: Visibility;
+  listed: boolean;
+  displaysPast: boolean;
 }
 
-const userFields = [
+export type UserWithCheckin = User & {
+  latestLocationId: string;
+};
+
+const dbUserFields: (keyof DBUser)[] = [
   "id",
   "screen_name",
   "name",
@@ -35,18 +41,7 @@ const userFields = [
   "displays_past",
 ];
 
-const checkinFields = [
-  "id",
-  "year",
-  "month",
-  "day",
-  "hours",
-  "count",
-  "location_id",
-  "updated_at",
-];
-
-const dbToUser = (dbUser: DBUser) => ({
+const dbToUser = (dbUser: DBUser): User => ({
   id: dbUser.id,
   screenName: dbUser.screen_name,
   name: dbUser.name,
@@ -56,15 +51,9 @@ const dbToUser = (dbUser: DBUser) => ({
   displaysPast: dbUser.displays_past === 1,
 });
 
-const dbToCheckin = (dbCheckin: DBCheckin) => ({
-  id: dbCheckin.id,
-  year: dbCheckin.year,
-  month: dbCheckin.month,
-  day: dbCheckin.day,
-  hours: dbCheckin.hours,
-  count: dbCheckin.count,
-  locationId: dbCheckin.location_id,
-  updatedAt: dayjs(dbCheckin.updated_at).tz("Asia/Tokyo").format(),
+const dbToUserWithCheckin = (dbUser: DBUserWithCheckin): UserWithCheckin => ({
+  ...dbToUser(dbUser),
+  latestLocationId: dbUser.location_id,
 });
 
 // user
@@ -79,6 +68,7 @@ export const fetchAllUsers = async (
 ) => {
   const qb = new D1QB(DB);
   const checkinConditions = [
+    "count > 0",
     "checkin.year = ?",
     "checkin.month = ?",
     "checkin.day = ?",
@@ -92,9 +82,12 @@ export const fetchAllUsers = async (
   ];
 
   const { results } = await qb
-    .fetchAll<DBUser>({
+    .fetchAll<DBUserWithCheckin>({
       tableName: "user",
-      fields: ["user.*"],
+      fields: [
+        ...dbUserFields.map((field) => `user.${field}`),
+        "checkin.location_id",
+      ],
       join: {
         type: "LEFT",
         table: {
@@ -114,10 +107,11 @@ export const fetchAllUsers = async (
       },
     })
     .execute();
+
   if (!results) {
     return [];
   }
-  return results.map(dbToUser);
+  return results.map(dbToUserWithCheckin);
 };
 
 export const fetchUser = async (
@@ -129,7 +123,7 @@ export const fetchUser = async (
   const { results } = await qb
     .fetchOne<DBUser>({
       tableName: "user",
-      fields: userFields,
+      fields: dbUserFields,
       where: { conditions, params: [value] },
     })
     .execute();
@@ -213,95 +207,6 @@ export const updateUser = async (
     .update({
       tableName: "user",
       data: newData,
-      where: { conditions: "id = ?", params: [id] },
-    })
-    .execute();
-};
-
-// checkin
-export const fetchCheckins = async (
-  userId: string,
-  options: {
-    year?: number;
-    month?: number;
-    day?: number;
-    hours?: number;
-    locationId?: string;
-  },
-  DB: D1Database
-) => {
-  const qb = new D1QB(DB);
-  const conditions = ["user_id = ?"];
-  const params: Primitive[] = [userId];
-  if (options.year !== undefined) {
-    conditions.push("year = ?");
-    params.push(options.year);
-  }
-  if (options.month !== undefined) {
-    conditions.push("month = ?");
-    params.push(options.month);
-  }
-  if (options.day !== undefined) {
-    conditions.push("day = ?");
-    params.push(options.day);
-  }
-  if (options.hours !== undefined) {
-    conditions.push("hours = ?");
-    params.push(options.hours);
-  }
-  if (options.locationId !== undefined) {
-    conditions.push("location_id = ?");
-    params.push(options.locationId);
-  }
-  const result = await qb
-    .fetchAll<DBCheckin>({
-      tableName: "checkin",
-      fields: checkinFields,
-      where: {
-        conditions: conditions.join(" AND "),
-        params,
-      },
-    })
-    .execute();
-  return result.results?.map(dbToCheckin) ?? [];
-};
-
-export const insertCheckin = async (
-  userId: string,
-  year: number,
-  month: number,
-  day: number,
-  hours: number,
-  locationId: string,
-  DB: D1Database
-) => {
-  const qb = new D1QB(DB);
-  await qb
-    .insert({
-      tableName: "checkin",
-      data: {
-        user_id: userId,
-        year,
-        month,
-        day,
-        hours,
-        location_id: locationId,
-        count: 1,
-      },
-    })
-    .execute();
-};
-
-export const updateCheckin = async (
-  id: number,
-  count: number,
-  DB: D1Database
-) => {
-  const qb = new D1QB(DB);
-  await qb
-    .update({
-      tableName: "checkin",
-      data: { count },
       where: { conditions: "id = ?", params: [id] },
     })
     .execute();

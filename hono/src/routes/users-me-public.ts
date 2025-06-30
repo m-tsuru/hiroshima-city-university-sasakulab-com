@@ -4,7 +4,7 @@ import { zValidator } from "@hono/zod-validator";
 import { v4 as uuidv4 } from "uuid";
 import { deleteCookie } from "hono/cookie";
 
-import { fetchUser, insertUser } from "../libs/db";
+import { fetchUser, insertUser } from "../libs/db/user";
 import {
   authMiddleware,
   getIdToken,

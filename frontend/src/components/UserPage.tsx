@@ -6,6 +6,7 @@ import { type User, fetchUser } from "../libs/api";
 import HistoryYearMap from "./HistoryYearMap";
 import HistoryMonthTable from "./HistoryMonthTable";
 import useCheckin, { isInternal } from "../libs/useCheckin";
+import { StatusCircle } from "./utils";
 
 const Header = styled.header`
   margin-bottom: 24px;
@@ -27,21 +28,6 @@ const Status = styled.p`
   padding-left: 22px;
   white-space: nowrap;
   overflow: hidden;
-`;
-
-const Circle = styled.span<{ status: "internal" | "others" | "inactive" }>`
-  width: 14px;
-  height: 14px;
-  vertical-align: middle;
-  margin: 0 8px 4px -22px;
-  display: inline-block;
-  border-radius: 50%;
-  background: ${({ status }) =>
-    status === "internal"
-      ? "hsl(25, 80%, 65%)"
-      : status === "others"
-      ? "#ccc"
-      : "#ccc"};
 `;
 
 const LastUpdate = styled.span`
@@ -102,7 +88,7 @@ const UserPage = () => {
           {lastCheckin ? (
             lastCheckin.active ? (
               <>
-                <Circle
+                <StatusCircle
                   status={
                     isInternal(lastCheckin.location) ? "internal" : "others"
                   }
@@ -114,7 +100,7 @@ const UserPage = () => {
               </>
             ) : (
               <>
-                <Circle status="inactive" />
+                <StatusCircle status="inactive" />
                 現在：不明
                 <br />
                 <LastUpdate>
@@ -127,7 +113,7 @@ const UserPage = () => {
             )
           ) : (
             <>
-              <Circle status="inactive" />
+              <StatusCircle status="inactive" />
               記録なし
             </>
           )}

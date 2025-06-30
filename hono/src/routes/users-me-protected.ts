@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { v4 as uuidv4 } from "uuid";
 
-import { fetchUser, updateUser } from "../libs/db";
+import { fetchUser, updateUser } from "../libs/db/user";
 import {
   authMiddleware,
   getIdToken,

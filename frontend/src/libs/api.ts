@@ -28,6 +28,10 @@ export interface User {
   displaysPast: boolean;
 }
 
+export type UserWithLatestCheckin = User & {
+  latestLocationId: string;
+};
+
 export type UserWithCheckins = User & {
   checkins: Checkin[];
 };
@@ -48,7 +52,7 @@ export const fetchAllUsers = async () => {
     if (!response.ok) {
       return error();
     }
-    return success((await response.json()) as User[]);
+    return success((await response.json()) as UserWithLatestCheckin[]);
   } catch {
     return error();
   }

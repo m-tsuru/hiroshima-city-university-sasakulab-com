@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import dayjs from "dayjs";
 
-import { fetchAllUsers, fetchCheckins, fetchUser } from "../libs/db";
+import { UserWithCheckin, fetchAllUsers, fetchUser } from "../libs/db/user";
+import { fetchCheckins } from "../libs/db/checkin";
 import { authMiddleware } from "../libs/token";
 import {
   Bindings,
@@ -26,14 +26,27 @@ const isVisible = (visibility: string, ip: string) => {
 
 app.get("/", async (c) => {
   const { year, month, day, hours } = getNow();
-  const users = await fetchAllUsers(c.env.DB, {
+  const results = await fetchAllUsers(c.env.DB, {
     year,
     month,
     day,
     hours,
   });
+
+  const users: Record<string, UserWithCheckin> = {};
+  for (const result of results) {
+    if (
+      !users[result.id]?.latestLocationId ||
+      users[result.id].latestLocationId === "others"
+    ) {
+      users[result.id] = result;
+    }
+  }
+
   const ip = getIP(c);
-  const filteredUsers = users.filter((user) => isVisible(user.visibility, ip));
+  const filteredUsers = results.filter((user) =>
+    isVisible(user.visibility, ip)
+  );
   return c.json(filteredUsers);
 });
 

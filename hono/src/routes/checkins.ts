@@ -1,7 +1,10 @@
 import { Hono } from "hono";
-import dayjs from "dayjs";
 
-import { fetchCheckins, insertCheckin, updateCheckin } from "../libs/db";
+import {
+  fetchCheckins,
+  insertCheckin,
+  updateCheckin,
+} from "../libs/db/checkin";
 import { authMiddleware } from "../libs/token";
 import { Bindings, getIP, getNow, isInternalIP } from "../libs/utils";
 
