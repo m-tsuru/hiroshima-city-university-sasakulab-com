@@ -42,6 +42,18 @@ export interface Checkin {
   updatedAt: string;
 }
 
+export const fetchAllUsers = async () => {
+  try {
+    const response = await fetch("/api/users");
+    if (!response.ok) {
+      return error();
+    }
+    return success((await response.json()) as User[]);
+  } catch {
+    return error();
+  }
+};
+
 export const fetchUser = async (screenName: string) => {
   try {
     const response = await fetch(`/api/users/@${screenName}`);

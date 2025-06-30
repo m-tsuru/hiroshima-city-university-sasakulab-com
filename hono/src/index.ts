@@ -7,8 +7,8 @@ import "dayjs/locale/ja";
 import { Bindings } from "./libs/utils";
 import checkins from "./routes/checkins";
 import users from "./routes/users";
-import { usersMeProtected } from "./routes/usersMeProtected";
-import { usersMePublic } from "./routes/usersMePublic";
+import { usersMeProtected } from "./routes/users-me-protected";
+import { usersMePublic } from "./routes/users-me-public";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
