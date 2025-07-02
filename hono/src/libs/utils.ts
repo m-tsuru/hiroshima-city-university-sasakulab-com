@@ -35,7 +35,7 @@ export const error = (
   status,
 });
 
-export const screenNameRegexStr = "[a-zA-Z0-9_]{4,16}";
+export const screenNameRegexStr = "[a-z0-9_]{4,16}";
 
 export const getIP = (c: Context) => {
   return c.req.header("CF-Connecting-IP") ?? "undefined";

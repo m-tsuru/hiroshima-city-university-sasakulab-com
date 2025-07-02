@@ -333,7 +333,7 @@ const AccountForm = () => {
                 <FormContent>
                   <Row>
                     <label style={{ flexGrow: 2 }}>
-                      <Heading>ID（[a-zA-Z0-9_]、4–16文字）</Heading>
+                      <Heading>ID（[a-z0-9_]、4–16文字）</Heading>
                       <TextBox
                         type="text"
                         value={screenName}

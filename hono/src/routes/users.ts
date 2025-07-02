@@ -33,8 +33,13 @@ app.get("/", async (c) => {
     hours,
   });
 
+  const ip = getIP(c);
+  const filteredResults = results.filter((user) =>
+    isVisible(user.visibility, ip)
+  );
+
   const users: Record<string, UserWithCheckin> = {};
-  for (const result of results) {
+  for (const result of filteredResults) {
     if (
       !users[result.id]?.latestLocationId ||
       users[result.id].latestLocationId === "others"
@@ -42,12 +47,7 @@ app.get("/", async (c) => {
       users[result.id] = result;
     }
   }
-
-  const ip = getIP(c);
-  const filteredUsers = results.filter((user) =>
-    isVisible(user.visibility, ip)
-  );
-  return c.json(filteredUsers);
+  return c.json(users);
 });
 
 app.get(
