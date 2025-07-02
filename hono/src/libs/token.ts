@@ -31,12 +31,17 @@ const authorizeUser = async (idToken: string | undefined, DB: D1Database) => {
   if (!idToken) {
     return error("Token not found", 401);
   }
+  // UUID:UUID の形式であるか
   const split = idToken.split(":");
   if (split.length !== 2) {
     return error("Invalid token", 401);
   }
-  const userId = split[0];
-  const token = split[1];
+  const [userId, token] = split;
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(userId) || !uuidRegex.test(token)) {
+    return error("Invalid token", 401);
+  }
 
   // ユーザを検索
   const userResult = await qb
