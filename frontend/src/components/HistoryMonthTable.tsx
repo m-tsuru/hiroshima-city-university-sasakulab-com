@@ -11,6 +11,10 @@ const Wrapper = styled.div`
   @media screen and (width < 700px) {
     font-size: 10px;
   }
+
+  @media screen and (width < 500px) {
+    font-size: 8px;
+  }
 `;
 
 const Row = styled.div`
