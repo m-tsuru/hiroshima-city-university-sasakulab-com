@@ -1,9 +1,10 @@
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { type UserWithLatestCheckin, fetchAllUsers } from "../libs/api";
 import { StatusCircle } from "./utils";
+import tsukuba from "../assets/tsukuba2.webp";
 
 const Header = styled.header`
   margin-bottom: 24px;
@@ -26,8 +27,32 @@ const ListLink = styled(Link)`
   }
 `;
 
+const Canvas = styled.canvas`
+  width: 100%;
+`;
+
+const grayToIndex = (gray: number) => {
+  if (gray < 0.18) {
+    return 0;
+  }
+  if (gray < 0.35) {
+    return 1;
+  }
+  if (gray < 0.55) {
+    return 2;
+  }
+  if (gray < 0.75) {
+    return 3;
+  }
+  if (gray < 0.95) {
+    return 4;
+  }
+  return 5;
+};
+
 const TopPage = () => {
   const [allUsers, setAllUsers] = useState<UserWithLatestCheckin[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -38,9 +63,61 @@ const TopPage = () => {
     })();
   }, [location]);
 
+  useEffect(() => {
+    (async () => {
+      const targetCanvas = canvasRef.current;
+      if (!targetCanvas) {
+        return;
+      }
+      const targetScale = 300;
+      targetCanvas.width = 5 * targetScale;
+      targetCanvas.height = 2 * targetScale;
+      const targetCtx = targetCanvas.getContext("2d");
+      if (!targetCtx) {
+        return;
+      }
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = () => {
+        const orgScale = 30;
+        canvas.width = 5 * orgScale;
+        canvas.height = 2 * orgScale;
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
+        if (!imageData) {
+          return;
+        }
+        const data = imageData.data;
+        const fontSize = Math.floor(targetCanvas.width / canvas.width);
+        targetCtx.font = `${fontSize}px "Noto Sans Mono"`;
+
+        const charMap = ["筑", "#", "A", "?", "–", " "];
+
+        // アスキーアートに変換
+        for (let y = 0; y < canvas.height; y++) {
+          for (let x = 0; x < canvas.width; x++) {
+            const i = (y * canvas.width + x) * 4;
+            const gray = (data[i] + data[i + 1] + data[i + 2]) / 3 / 255;
+            const d = grayToIndex(gray);
+            const char = charMap[d];
+            const x0 = (targetCanvas.width / canvas.width) * x;
+            const y0 = (targetCanvas.height / canvas.height) * y;
+            targetCtx.fillText(char, x0, y0);
+          }
+        }
+      };
+
+      img.src = tsukuba;
+    })();
+  }, []);
+
   return (
     <main>
-      <Header>アイコン画像を入れたい</Header>
+      <Canvas ref={canvasRef} />
       <H3>みんなのきろく</H3>
       <ul>
         {allUsers.map((user) => {
