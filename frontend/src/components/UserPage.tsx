@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { type User, fetchUser } from "../libs/api";
@@ -47,6 +47,17 @@ const P = styled.p`
   margin: 0 0 16px 0;
 `;
 
+const TweetAnchor = styled.a`
+  color: #999;
+  text-decoration: none;
+  text-underline-offset: 4px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const UserPage = () => {
   const { screenName } = useParams();
   const navigate = useNavigate();
@@ -60,6 +71,29 @@ const UserPage = () => {
     checkinsPerHour,
     setCheckins,
   } = usedCheckin;
+
+  const tweet = useCallback(() => {
+    if (!user) {
+      return;
+    }
+    let message = "";
+    if (lastCheckin) {
+      if (lastCheckin.active) {
+        message = `${user.name}は${
+          isInternal(lastCheckin.location) ? "筑波大学" : "学外"
+        }にいます`;
+      } else {
+        message = `${user.name}がどこにいるかは不明です`;
+      }
+    } else {
+      message = `${user.name}の記録はありません`;
+    }
+    const messageWithUrl = `${message}\nhttps://tsukuba.yokohama.dev/@${user.screenName}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      messageWithUrl
+    )}`;
+    window.open(url, "_blank");
+  }, [user, lastCheckin, screenName]);
 
   useEffect(() => {
     (async () => {
@@ -97,6 +131,7 @@ const UserPage = () => {
                 {isInternal(lastCheckin.location) ? "筑波大学" : "学外"}
                 <br />
                 <LastUpdate>最終更新：{lastCheckin.date}</LastUpdate>
+                <TweetAnchor onClick={tweet}>（ツイート）</TweetAnchor>
               </>
             ) : (
               <>
@@ -108,13 +143,14 @@ const UserPage = () => {
                   {isInternal(lastCheckin.location)
                     ? "筑波大学"
                     : "学外"} ／ {lastCheckin.date}
+                  <TweetAnchor onClick={tweet}>（ツイート）</TweetAnchor>
                 </LastUpdate>
               </>
             )
           ) : (
             <>
               <StatusCircle status="inactive" />
-              記録なし
+              記録なし<TweetAnchor onClick={tweet}>（ツイート）</TweetAnchor>
             </>
           )}
         </Status>
