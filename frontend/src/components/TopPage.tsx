@@ -14,6 +14,18 @@ const H3 = styled.h3`
   margin: 24px 0 0 0;
 `;
 
+const ListLink = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  padding: 4px 0;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+`;
+
 const TopPage = () => {
   const [allUsers, setAllUsers] = useState<UserWithLatestCheckin[]>([]);
 
@@ -38,13 +50,19 @@ const TopPage = () => {
               : user.latestLocationId === "others"
               ? "others"
               : "inactive";
+          const statusText =
+            status === "internal"
+              ? "筑波大学"
+              : status === "others"
+              ? "学外"
+              : "不明";
           return (
             <li key={user.id}>
-              <Link to={`/@${user.screenName}`}>
+              <ListLink to={`/@${user.screenName}`}>
                 <StatusCircle status={status} />
                 {user.name}（@{user.screenName}） 現在：
-                {user.latestLocationId ?? "不明"}
-              </Link>
+                {statusText}
+              </ListLink>
             </li>
           );
         })}

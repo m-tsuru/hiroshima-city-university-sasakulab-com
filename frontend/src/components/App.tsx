@@ -1,5 +1,9 @@
 import styled from "@emotion/styled";
 import { css, Global } from "@emotion/react";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import "dayjs/locale/ja";
 
 import AccountForm from "./AccountForm";
 import PageMain from "./PageMain";
@@ -34,6 +38,11 @@ const Wrapper = styled.div`
   overflow-y: scroll;
   scroll-snap-type: y proximity;
 `;
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
+dayjs.locale("ja");
 
 const App = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);

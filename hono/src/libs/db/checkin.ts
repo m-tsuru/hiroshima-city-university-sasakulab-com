@@ -1,5 +1,4 @@
 import { D1Database } from "@cloudflare/workers-types";
-import dayjs from "dayjs";
 import { D1QB, Primitive } from "workers-qb";
 
 interface DBCheckin {
@@ -21,7 +20,7 @@ const dbToCheckin = (dbCheckin: DBCheckin) => ({
   hours: dbCheckin.hours,
   count: dbCheckin.count,
   locationId: dbCheckin.location_id,
-  updatedAt: dayjs(dbCheckin.updated_at).tz("Asia/Tokyo").format(),
+  updatedAt: dbCheckin.updated_at,
 });
 
 const checkinFields: (keyof DBCheckin)[] = [

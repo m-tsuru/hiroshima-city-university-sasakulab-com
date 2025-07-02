@@ -94,7 +94,7 @@ const UserPage = () => {
                   }
                 />
                 現在：
-                {isInternal(lastCheckin.location) ? "筑波大学" : "その他"}
+                {isInternal(lastCheckin.location) ? "筑波大学" : "学外"}
                 <br />
                 <LastUpdate>最終更新：{lastCheckin.date}</LastUpdate>
               </>
@@ -107,7 +107,7 @@ const UserPage = () => {
                   最終更新：
                   {isInternal(lastCheckin.location)
                     ? "筑波大学"
-                    : "その他"} ／ {lastCheckin.date}
+                    : "学外"} ／ {lastCheckin.date}
                 </LastUpdate>
               </>
             )

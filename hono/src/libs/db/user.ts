@@ -102,7 +102,7 @@ export const fetchAllUsers = async (
         on: "user.id = checkin.user_id",
       },
       where: {
-        conditions: "TRUE",
+        conditions: "listed == 1",
         params: checkinParams,
       },
     })

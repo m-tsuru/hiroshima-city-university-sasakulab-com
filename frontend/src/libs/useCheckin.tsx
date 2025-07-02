@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Checkin } from "./api";
+import dayjs from "dayjs";
 
 export const isInternal = (locationId: string) => {
   return locationId === "utsukuba";
@@ -39,14 +40,16 @@ const useCheckin = () => {
         last = checkin;
       }
     }
-    const lastDate = new Date(last.updatedAt);
-    const year = lastDate.getFullYear();
-    const month = (lastDate.getMonth() + 1).toString().padStart(2, "0");
-    const day = lastDate.getDate().toString().padStart(2, "0");
-    const hours = lastDate.getHours().toString().padStart(2, "0");
-    const minutes = lastDate.getMinutes().toString().padStart(2, "0");
 
-    const active = lastDate.getTime() > Date.now() - 60 * 60 * 1000;
+    const lastDate = dayjs.utc(last.updatedAt).tz("Asia/Tokyo");
+    const year = lastDate.year();
+    const month = (lastDate.month() + 1).toString().padStart(2, "0");
+    const day = lastDate.date().toString().padStart(2, "0");
+    const hours = lastDate.hour().toString().padStart(2, "0");
+    const minutes = lastDate.minute().toString().padStart(2, "0");
+    const active = lastDate.isAfter(
+      dayjs().tz("Asia/Tokyo").subtract(1, "hour")
+    );
 
     return {
       location: last.locationId,
