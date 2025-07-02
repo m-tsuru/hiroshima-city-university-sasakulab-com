@@ -6,13 +6,14 @@ import { type UserWithLatestCheckin, fetchAllUsers } from "../libs/api";
 import { StatusCircle } from "./utils";
 import tsukuba from "../assets/tsukuba2.webp";
 
-const Header = styled.header`
-  margin-bottom: 24px;
-`;
-
 const H3 = styled.h3`
   font-size: 1em;
   margin: 24px 0 0 0;
+`;
+
+const List = styled.ul`
+  padding-left: 20px;
+  list-style: none;
 `;
 
 const ListLink = styled(Link)`
@@ -119,7 +120,7 @@ const TopPage = () => {
     <main>
       <Canvas ref={canvasRef} />
       <H3>みんなのきろく</H3>
-      <ul>
+      <List>
         {allUsers.map((user) => {
           const status =
             user.latestLocationId === "utsukuba"
@@ -143,7 +144,7 @@ const TopPage = () => {
             </li>
           );
         })}
-      </ul>
+      </List>
     </main>
   );
 };

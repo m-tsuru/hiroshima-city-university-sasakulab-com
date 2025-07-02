@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 
 const Header = styled.header`
   color: #999;
+  line-height: 1.8;
   font-size: 14px;
   margin: 0 0 24px 0;
   padding-bottom: 8px;
@@ -74,9 +75,7 @@ const PageMain = ({ wrapperRef, ref }: PageMainProps) => {
             <HomeLink to="/">
               <AiFillHome />
             </HomeLink>
-            <a onClick={scrollToTop}>
-              上にスクロールしてアカウント登録／サインイン
-            </a>
+            <a onClick={scrollToTop}>上スクロールで登録／サインイン</a>
           </Left>
           <a href="https://github.com/inaniwaudon/tsukuba-yokohama-dev">
             GitHub ／ 使い方
