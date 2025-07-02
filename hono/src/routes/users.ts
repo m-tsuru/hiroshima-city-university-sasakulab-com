@@ -47,7 +47,7 @@ app.get("/", async (c) => {
       users[result.id] = result;
     }
   }
-  return c.json(users);
+  return c.json(Object.values(users));
 });
 
 app.get(
