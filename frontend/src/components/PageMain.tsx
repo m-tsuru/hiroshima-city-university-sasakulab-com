@@ -20,7 +20,6 @@ const Wrapper = styled.div`
 
 const Header = styled.header`
   color: #999;
-  line-height: 1.8;
   font-size: 14px;
   margin: 0 0 24px 0;
   padding-bottom: 8px;
