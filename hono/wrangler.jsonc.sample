@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tsukuba-yokohama-dev",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-06-22",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tsukuba-yokohama-dev",
+      "database_id": "<DATABASE_ID>",
+      "preview_database_id": "<PREVIEW_DATABASE_ID>"
+    }
+  ]
+}
