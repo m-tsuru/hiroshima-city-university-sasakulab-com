@@ -47,9 +47,13 @@ const useCheckin = () => {
     const day = lastDate.date().toString().padStart(2, "0");
     const hours = lastDate.hour().toString().padStart(2, "0");
     const minutes = lastDate.minute().toString().padStart(2, "0");
-    const active = lastDate.isAfter(
-      dayjs().tz("Asia/Tokyo").subtract(1, "hour")
-    );
+
+    const now = dayjs().tz("Asia/Tokyo");
+    const active =
+      lastDate.year() === now.year() &&
+      lastDate.month() === now.month() &&
+      lastDate.date() === now.date() &&
+      lastDate.hour() === now.hour();
 
     return {
       location: last.locationId,

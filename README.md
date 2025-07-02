@@ -68,3 +68,9 @@ yarn run build
 cd hono
 yarn run deploy
 ```
+
+## ライセンス
+
+Copyright (c) 2025 いなにわうどん. This script is released under the MIT License, see LICENSE.
+
+MIT ライセンスに従って、自由に使用・再配布等を行うことができます。
