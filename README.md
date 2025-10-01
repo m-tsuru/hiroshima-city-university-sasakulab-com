@@ -1,13 +1,13 @@
-# hiroshima-city-university.sasakulab.com
+# ichipiro.sasakulab.com
 
 広島市立大学にいるかいないかを記録・公開する Web サイト
 
-<https://hiroshima-city-university.sasakulab.com>
+<https://ichipiro.sasakulab.com>
 
 ## 仕様・使い方
 
 ### 判定
-- `165.242.0.0/16` からの接続を学内と判定します
+- `165.242.0.0/16`, `2001:2f8:1c2` からの接続を学内と判定します
 - 設定によって VPN 経由での接続は学内判定される可能性があります。
 
 ### 初回登録
@@ -26,7 +26,7 @@
 ### 記録
 - 以下の POST リクエストを送信してください
   ```bash
-  curl -X POST https://hiroshima-city-university.sasakulab.com/api/checkins \
+  curl -X POST https://ichipiro.sasakulab.com/api/checkins \
     -H "Authorization: <YOUR_TOKEN>"
   ```
   - レートリミット（100 回/時間）を設けています
@@ -36,12 +36,12 @@
 
 launchd を用いて上記コマンドを定期実行できます
 
-1. `com.sasakulab.hiroshima-city-university.plist` をダウンロードします
+1. `com.sasakulab.ichipiro.plist` をダウンロードします
 2. `$YOUR_TOKEN` を書き換えた上で `~/Library/LaunchAgents` に保存します
-3. `launchctl load ~/Library/LaunchAgents/com.sasakulab.hiroshima-city-university.plist` を実行します
+3. `launchctl load ~/Library/LaunchAgents/com.sasakulab.ichipiro.plist` を実行します
 
 ### 記録の確認
-  - <https://hiroshima-city-university.sasakulab.com/@screenname> から確認できます
+  - <https://ichipiro.sasakulab.com/@screenname> から確認できます
 
 ## 開発
 
