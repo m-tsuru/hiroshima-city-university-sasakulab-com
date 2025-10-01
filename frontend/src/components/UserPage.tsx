@@ -80,7 +80,7 @@ const UserPage = () => {
     if (lastCheckin) {
       if (lastCheckin.active) {
         message = `${user.name}は${
-          isInternal(lastCheckin.location) ? "筑波大学" : "学外"
+          isInternal(lastCheckin.location) ? "広島市立大学" : "学外"
         }にいます`;
       } else {
         message = `${user.name}がどこにいるかは不明です`;
@@ -128,7 +128,7 @@ const UserPage = () => {
                   }
                 />
                 現在：
-                {isInternal(lastCheckin.location) ? "筑波大学" : "学外"}
+                {isInternal(lastCheckin.location) ? "広島市立大学" : "学外"}
                 <br />
                 <LastUpdate>最終更新：{lastCheckin.date}</LastUpdate>
                 <TweetAnchor onClick={tweet}>（ツイート）</TweetAnchor>
@@ -141,7 +141,7 @@ const UserPage = () => {
                 <LastUpdate>
                   最終更新：
                   {isInternal(lastCheckin.location)
-                    ? "筑波大学"
+                    ? "広島市立大学"
                     : "学外"} ／ {lastCheckin.date}
                   <TweetAnchor onClick={tweet}>（ツイート）</TweetAnchor>
                 </LastUpdate>

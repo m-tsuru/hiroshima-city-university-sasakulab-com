@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 import { type UserWithLatestCheckin, fetchAllUsers } from "../libs/api";
 import { StatusCircle } from "./utils";
-import tsukuba from "../assets/tsukuba2.webp";
+import hiroshima from "../assets/ichipiro.webp";
 
 const H3 = styled.h3`
   font-size: 1em;
@@ -96,7 +96,7 @@ const TopPage = () => {
         const fontSize = Math.floor(targetCanvas.width / canvas.width);
         targetCtx.font = `${fontSize}px "Noto Sans Mono"`;
 
-        const charMap = ["筑", "#", "A", "?", "–", " "];
+        const charMap = ["広", "#", "A", "?", "–", " "];
 
         // アスキーアートに変換
         for (let y = 0; y < canvas.height; y++) {
@@ -112,7 +112,7 @@ const TopPage = () => {
         }
       };
 
-      img.src = tsukuba;
+      img.src = hiroshima;
     })();
   }, []);
 
@@ -123,14 +123,14 @@ const TopPage = () => {
       <List>
         {allUsers.map((user) => {
           const status =
-            user.latestLocationId === "utsukuba"
+            user.latestLocationId === "uhiroshimacity"
               ? "internal"
               : user.latestLocationId === "others"
               ? "others"
               : "inactive";
           const statusText =
             status === "internal"
-              ? "筑波大学"
+              ? "広島市立大学"
               : status === "others"
               ? "学外"
               : "不明";

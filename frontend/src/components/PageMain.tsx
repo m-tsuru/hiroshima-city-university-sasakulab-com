@@ -76,8 +76,12 @@ const PageMain = ({ wrapperRef, ref }: PageMainProps) => {
             </HomeLink>
             <a onClick={scrollToTop}>上スクロールで登録／サインイン</a>
           </Left>
-          <a href="https://github.com/inaniwaudon/tsukuba-yokohama-dev">
+          <a href="https://github.com/m-tsuru/hiroshima-city-university-sasakulab-com">
             GitHub ／ 使い方
+          </a>
+          &nbsp;／&nbsp;
+          <a href="https://github.com/inaniwaudon/tsukuba-yokohama-dev">
+            筑波大学（本家）
           </a>
         </Header>
         <Routes>

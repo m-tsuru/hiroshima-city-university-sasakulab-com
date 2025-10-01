@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>dev.yokohama.tsukuba</string>
+    <string>com.sasakulab.ichipiro</string>
 
     <key>StartInterval</key>
-    <integer>120</integer>
+    <integer>300</integer>
 
     <key>ProgramArguments</key>
     <array>
@@ -15,7 +15,7 @@
         <string>POST</string>
         <string>-H</string>
         <string>Authorization: $YOUR_TOKEN</string>
-        <string>https://tsukuba.yokohama.dev/api/checkins</string>
+        <string>https://ichipiro.sasakulab.com/api/checkins</string>
     </array>
 
     <key>RunAtLoad</key>

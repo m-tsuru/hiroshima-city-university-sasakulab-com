@@ -1,14 +1,14 @@
-# tsukuba.yokohama.dev
+# hiroshima-city-university.sasakulab.com
 
-筑波大学にいるかいないかを記録・公開する Web サイト
+広島市立大学にいるかいないかを記録・公開する Web サイト
 
-<https://tsukuba.yokohama.dev>
+<https://hiroshima-city-university.sasakulab.com>
 
 ## 仕様・使い方
 
 ### 判定
-- `130.158.0.0/16`, `133.51.0.0/16` からの接続を学内と判定します
-- VPN 経由での接続は学内判定されません
+- `165.242.0.0/16` からの接続を学内と判定します
+- 設定によって VPN 経由での接続は学内判定される可能性があります。
 
 ### 初回登録
 - 学内（上記 IP）からのアクセスが必要です
@@ -26,7 +26,7 @@
 ### 記録
 - 以下の POST リクエストを送信してください
   ```bash
-  curl -X POST https://tsukuba.yokohama.dev/api/checkins \
+  curl -X POST https://hiroshima-city-university.sasakulab.com/api/checkins \
     -H "Authorization: <YOUR_TOKEN>"
   ```
   - レートリミット（100 回/時間）を設けています
@@ -36,12 +36,12 @@
 
 launchd を用いて上記コマンドを定期実行できます
 
-1. `dev.yokohama.tsukuba.plist` をダウンロードします
+1. `com.sasakulab.hiroshima-city-university.plist` をダウンロードします
 2. `$YOUR_TOKEN` を書き換えた上で `~/Library/LaunchAgents` に保存します
-3. `launchctl load ~/Library/LaunchAgents/dev.yokohama.tsukuba.plist` を実行します
+3. `launchctl load ~/Library/LaunchAgents/com.sasakulab.hiroshima-city-university.plist` を実行します
 
 ### 記録の確認
-  - <https://tsukuba.yokohama.dev/@screenname> から確認できます
+  - <https://hiroshima-city-university.sasakulab.com/@screenname> から確認できます
 
 ## 開発
 
@@ -71,6 +71,10 @@ yarn run deploy
 
 ## ライセンス
 
-Copyright (c) 2025 いなにわうどん. This script is released under the MIT License, see LICENSE.
+このスクリプトは MIT LICENSE にしたがって、ささくらりが改変し、運用しています。
+
+Copyright (c) 2025 いなにわうどん, ささくらり.
+
+This script is released under the MIT License, see LICENSE.
 
 MIT ライセンスに従って、自由に使用・再配布等を行うことができます。

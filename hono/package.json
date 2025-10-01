@@ -1,5 +1,5 @@
 {
-  "name": "tsukuba-yokohama-dev",
+  "name": "hiroshima-city-university-sasakulab-com",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",

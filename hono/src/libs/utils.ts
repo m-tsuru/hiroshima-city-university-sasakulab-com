@@ -42,7 +42,7 @@ export const getIP = (c: Context) => {
 };
 
 export const isInternalIP = (ip: string) => {
-  const prefixes = ["130.158.", "133.51."];
+  const prefixes = ["165.242.", "2001:2f8:1c2"];
   return prefixes.some((prefix) => ip.startsWith(prefix));
 };
 
